@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_tokens.dart';
+import 'chunky.dart';
 import 'effects.dart';
 import 'pressable.dart';
 
@@ -33,18 +34,19 @@ class OptionTile extends StatelessWidget {
       TileState.hint => const Color(0xFFFFD43B),
       _ => Colors.transparent,
     };
-    Widget tile = Container(
+    final wrong = state == TileState.wrong;
+    Widget tile = ChunkyBox(
       width: size,
       height: size,
-      alignment: Alignment.center,
+      color: wrong ? color.withValues(alpha: 0.45) : color,
+      radius: AppRadius.card,
+      depth: wrong ? 0 : size * 0.04,
+      gloss: !wrong,
+      shadow: !wrong,
+      borderColor: border,
+      borderWidth: border == Colors.transparent ? 0 : 5,
       padding: EdgeInsets.all(size * 0.08),
-      decoration: BoxDecoration(
-        color: state == TileState.wrong ? color.withValues(alpha: 0.45) : color,
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        border: Border.all(color: border, width: 5),
-        boxShadow: state == TileState.wrong ? null : AppShadows.card,
-      ),
-      child: FittedBox(fit: BoxFit.scaleDown, child: child),
+      child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: child)),
     );
     if (state == TileState.hint) tile = Pulse(child: tile);
     return Shake(

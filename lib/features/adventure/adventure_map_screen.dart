@@ -5,6 +5,7 @@ import '../../app_scope.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive.dart';
 import '../../services/audio_service.dart';
+import '../../widgets/chunky.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/kid_scaffold.dart';
 import '../../widgets/pressable.dart';
@@ -244,10 +245,10 @@ class _LevelNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final u = context.u;
     final locked = state == _NodeState.locked;
-    final colors = switch (state) {
-      _NodeState.locked => const [Color(0xFFB8C2CC), Color(0xFF8E9AA6)],
-      _NodeState.current => const [Color(0xFFFFB347), Color(0xFFFF8A00)],
-      _NodeState.done => const [Color(0xFF63D184), Color(0xFF2E9E57)],
+    final base = switch (state) {
+      _NodeState.locked => const Color(0xFF9AA7B4),
+      _NodeState.current => const Color(0xFFFF9F1C),
+      _NodeState.done => const Color(0xFF3FBF4A),
     };
     final review = level.kind == LevelKind.review;
     Widget face;
@@ -261,17 +262,15 @@ class _LevelNode extends StatelessWidget {
         style: TextStyle(fontSize: radius * 1.05, fontWeight: FontWeight.w900, color: Colors.white, height: 1.15),
       );
     }
-    final circle = Container(
+    final circle = ChunkyBox(
+      circle: true,
+      color: base,
       width: radius * 2,
       height: radius * 2,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: colors),
-        border: Border.all(color: Colors.white, width: 5),
-        boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 8, offset: Offset(0, 5))],
-      ),
-      child: face,
+      depth: 7 * u,
+      borderColor: Colors.white,
+      borderWidth: 4,
+      child: Center(child: face),
     );
     return Pressable(
       onTap: onTap,

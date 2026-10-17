@@ -3,6 +3,7 @@ import '../../app_scope.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/responsive.dart';
+import '../../widgets/chunky.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/hold_to_unlock.dart';
 import '../../widgets/kid_scaffold.dart';
@@ -88,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
               maxCrossAxisExtent: 220 * u,
               mainAxisSpacing: 16 * u,
               crossAxisSpacing: 16 * u,
-              childAspectRatio: 0.95,
+              childAspectRatio: 0.92,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, i) => PopIn(index: i, child: _WorldTile(world: worlds[i])),
@@ -117,41 +118,87 @@ class _WorldTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final u = context.u;
+    final label = context.tr(world.labelKey);
+    final progress = world.progress;
     return Pressable(
-      semanticLabel: context.tr(world.labelKey),
+      semanticLabel: label,
       onTap: () => Navigator.of(context).push(fadeRoute(world.builder())),
-      child: Container(
-        decoration: BoxDecoration(
-          color: world.color,
-          borderRadius: BorderRadius.circular(AppRadius.card * 1.2),
-          boxShadow: AppShadows.soft(world.color),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [world.color.withValues(alpha: 0.85), world.color],
-          ),
-        ),
-        padding: EdgeInsets.all(12 * u),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Expanded(child: FittedBox(child: Text(world.emoji, style: const TextStyle(fontSize: 70)))),
-          Text(context.tr(world.labelKey),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: TextStyle(fontSize: 22 * u, fontWeight: FontWeight.w900, color: Colors.white)),
-          if (world.progress != null) ...[
-            SizedBox(height: 8 * u),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: LinearProgressIndicator(
-                value: world.progress,
-                minHeight: 10 * u,
-                color: Colors.white,
-                backgroundColor: Colors.white30,
+      child: ChunkyBox(
+        color: world.color,
+        radius: 34 * u,
+        depth: 8 * u,
+        clip: true,
+        padding: EdgeInsets.all(10 * u),
+        child: Stack(children: [
+          Positioned(top: -26 * u, left: -26 * u, child: _Blob(size: 100 * u, alpha: 0.14)),
+          Positioned(bottom: 44 * u, right: -30 * u, child: _Blob(size: 84 * u, alpha: 0.11)),
+          Positioned(top: 40 * u, right: 10 * u, child: _Blob(size: 18 * u, alpha: 0.25)),
+          Column(children: [
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  width: 108 * u,
+                  height: 108 * u,
+                  child: Stack(alignment: Alignment.center, children: [
+                    Container(
+                      width: 92 * u,
+                      height: 92 * u,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.28),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.55), width: 3),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(world.emoji, style: TextStyle(fontSize: 52 * u)),
+                    ),
+                    if (progress != null)
+                      SizedBox(
+                        width: 108 * u,
+                        height: 108 * u,
+                        child: CircularProgressIndicator(
+                          value: progress,
+                          strokeWidth: 7 * u,
+                          strokeCap: StrokeCap.round,
+                          color: Colors.white,
+                          backgroundColor: Colors.white24,
+                        ),
+                      ),
+                  ]),
+                ),
               ),
             ),
-          ],
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 8 * u, vertical: 7 * u),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.96),
+                borderRadius: BorderRadius.circular(22 * u),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 21 * u, fontWeight: FontWeight.w900, color: darken(world.color, 0.12)),
+                ),
+              ),
+            ),
+          ]),
         ]),
       ),
     );
   }
+}
+
+class _Blob extends StatelessWidget {
+  const _Blob({required this.size, required this.alpha});
+  final double size;
+  final double alpha;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: alpha)),
+      );
 }

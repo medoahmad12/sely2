@@ -4,7 +4,9 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_tokens.dart';
 import '../core/utils/responsive.dart';
 import '../features/rewards/reward_catalog.dart';
+import 'chunky.dart';
 import 'pressable.dart';
+import 'scene_backdrop.dart';
 
 /// Page route with a soft fade + slight upward slide.
 Route<T> fadeRoute<T>(Widget page) => PageRouteBuilder<T>(
@@ -29,18 +31,21 @@ class StarCounter extends StatelessWidget {
     final u = context.u;
     return Semantics(
       label: '${context.app.progress.stars}',
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14 * u, vertical: 6 * u),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.chip * u),
-          boxShadow: AppShadows.card,
-        ),
+      child: ChunkyBox(
+        color: const Color(0xFFFFB81F),
+        radius: AppRadius.chip * u,
+        depth: 4 * u,
+        padding: EdgeInsets.symmetric(horizontal: 12 * u, vertical: 5 * u),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Text('⭐', style: TextStyle(fontSize: 24 * u)),
           SizedBox(width: 6 * u),
           Text('${context.app.progress.stars}',
-              style: TextStyle(fontSize: 22 * u, fontWeight: FontWeight.w900, color: AppColors.orange)),
+              style: TextStyle(
+                fontSize: 22 * u,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                shadows: const [Shadow(color: Color(0x66000000), blurRadius: 3, offset: Offset(0, 2))],
+              )),
         ]),
       ),
     );
@@ -61,11 +66,13 @@ class RoundIconButton extends StatelessWidget {
     return Pressable(
       onTap: onTap,
       semanticLabel: label,
-      child: Container(
+      child: ChunkyBox(
+        circle: true,
+        color: color,
         width: 60 * u,
         height: 60 * u,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: AppShadows.card),
-        child: Icon(icon, size: 34 * u, color: iconColor),
+        depth: 5 * u,
+        child: Center(child: Icon(icon, size: 34 * u, color: iconColor)),
       ),
     );
   }
@@ -93,10 +100,8 @@ class KidScaffold extends StatelessWidget {
     final colors = RewardCatalog.gradientFor(context.app.progress.background);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: colors),
-        ),
+      body: SceneBackdrop(
+        colors: colors,
         child: SafeArea(
           child: Column(children: [
             Padding(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_tokens.dart';
 import '../core/utils/responsive.dart';
+import 'chunky.dart';
 import 'pressable.dart';
 import 'sely_mascot.dart';
 
@@ -25,13 +26,12 @@ class SelyGuide extends StatelessWidget {
           child: Pressable(
             onTap: onTap,
             semanticLabel: text,
-            child: Container(
+            child: ChunkyBox(
+              color: Colors.white,
+              radius: AppRadius.card * u,
+              depth: 4 * u,
+              gloss: false,
               padding: EdgeInsets.symmetric(horizontal: 16 * u, vertical: 12 * u),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppRadius.card * u),
-                boxShadow: AppShadows.card,
-              ),
               child: Row(children: [
                 Expanded(
                   child: Text(text,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive.dart';
+import '../../widgets/chunky.dart';
 import '../../widgets/kid_scaffold.dart';
 import '../../widgets/pressable.dart';
 import 'rabbit.dart';
@@ -121,13 +122,12 @@ class RabbitSpeechBar extends StatelessWidget {
             child: Pressable(
               onTap: onTap,
               semanticLabel: text,
-              child: Container(
+              child: ChunkyBox(
+                color: Colors.white,
+                radius: 26 * u,
+                depth: 5 * u,
+                gloss: false,
                 padding: EdgeInsets.symmetric(horizontal: 16 * u, vertical: 12 * u),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24 * u),
-                  boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 10, offset: Offset(0, 4))],
-                ),
                 child: Row(children: [
                   Expanded(
                     child: Text(

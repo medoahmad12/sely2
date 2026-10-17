@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../app_scope.dart';
 import '../core/theme/app_colors.dart';
 import '../core/utils/responsive.dart';
+import 'chunky.dart';
+import 'pressable.dart';
 import 'sely_mascot.dart';
 
 /// End-of-lesson / end-of-game celebration with action buttons.
@@ -58,17 +60,28 @@ class BigActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final u = context.u;
-    return FilledButton.icon(
-      style: FilledButton.styleFrom(
-        backgroundColor: color,
-        minimumSize: Size(150 * u, 64 * u),
-        padding: EdgeInsets.symmetric(horizontal: 22 * u),
+    return Pressable(
+      onTap: onTap,
+      semanticLabel: label,
+      child: ChunkyBox(
+        color: color,
+        radius: 36 * u,
+        depth: 6 * u,
+        padding: EdgeInsets.symmetric(horizontal: 24 * u, vertical: 12 * u),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, size: 32 * u, color: Colors.white),
+          SizedBox(width: 10 * u),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 22 * u,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              shadows: const [Shadow(color: Color(0x55000000), blurRadius: 3, offset: Offset(0, 2))],
+            ),
+          ),
+        ]),
       ),
-      onPressed: () {
-        onTap();
-      },
-      icon: Icon(icon, size: 30 * u),
-      label: Text(label),
     );
   }
 }
