@@ -16,6 +16,14 @@ class Rabbit extends StatefulWidget {
 }
 
 class _RabbitState extends State<Rabbit> with TickerProviderStateMixin {
+  /// The white bunny pictures (assets/images/art). The wave / think poses have no ear flower,
+  /// so the flower poses are used for the everyday moods.
+  static String _artFor(RabbitMood m) => switch (m) {
+        RabbitMood.cheer => 'bunny_star',
+        RabbitMood.thinking || RabbitMood.sad => 'bunny_think',
+        _ => 'bunny_happy',
+      };
+
   late final AnimationController _idle = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat();
   late final AnimationController _hop = AnimationController(vsync: this, duration: const Duration(milliseconds: 650));
 
@@ -48,13 +56,20 @@ class _RabbitState extends State<Rabbit> with TickerProviderStateMixin {
             final hop = -math.sin(_hop.value * math.pi) * s * 0.2;
             return Transform.translate(
               offset: Offset(0, breathe + hop),
-              child: CustomPaint(
-                size: Size.square(s),
-                painter: _RabbitPainter(
-                  mood: widget.mood,
-                  blink: blink,
-                  wiggle: math.sin(t * 2 * math.pi * 2) * 0.07,
-                  armWave: math.sin(t * 2 * math.pi * 5),
+              child: Image.asset(
+                'assets/images/art/${_artFor(widget.mood)}.png',
+                height: s,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.medium,
+                // no picture available -> the drawn rabbit
+                errorBuilder: (context, error, stack) => CustomPaint(
+                  size: Size.square(s),
+                  painter: _RabbitPainter(
+                    mood: widget.mood,
+                    blink: blink,
+                    wiggle: math.sin(t * 2 * math.pi * 2) * 0.07,
+                    armWave: math.sin(t * 2 * math.pi * 5),
+                  ),
                 ),
               ),
             );

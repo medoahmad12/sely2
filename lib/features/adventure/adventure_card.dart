@@ -36,7 +36,27 @@ class AdventureCard extends StatelessWidget {
         gloss: false,
         height: 168 * u,
         child: Stack(children: [
-          Positioned.fill(child: CustomPaint(painter: _SceneCardPainter())),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/art/panorama_banner.png',
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              filterQuality: FilterQuality.medium,
+              errorBuilder: (context, error, stack) => CustomPaint(painter: _SceneCardPainter()),
+            ),
+          ),
+          // soft shade so the white title stays readable on the picture
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: AlignmentDirectional.centerStart,
+                  end: AlignmentDirectional.centerEnd,
+                  colors: [Colors.black.withValues(alpha: 0.05), Colors.black.withValues(alpha: 0.38)],
+                ),
+              ),
+            ),
+          ),
           Positioned(
             left: 8 * u,
             bottom: 0,

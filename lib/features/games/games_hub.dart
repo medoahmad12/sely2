@@ -7,6 +7,7 @@ import '../../widgets/effects.dart';
 import '../../widgets/kid_scaffold.dart';
 import '../../widgets/pressable.dart';
 import 'count_game.dart';
+import 'feed_cat_game.dart';
 import 'game_items.dart';
 import 'match_game.dart';
 import 'memory_game.dart';
@@ -32,6 +33,7 @@ class _GamesHubScreenState extends State<GamesHubScreen> {
       ('🧠', 'game_memory', AppColors.purple, () => MemoryGameScreen(kind: _kind)),
       ('✏️', 'game_trace', AppColors.pink, () => const TracePickerScreen()),
       ('🍎', 'game_count', AppColors.primary, () => const CountGameScreen()),
+      ('🐱', 'game_feed', const Color(0xFF00B8A9), () => const FeedCatGameScreen()),
     ];
     return KidScaffold(
       title: context.tr('world_games'),
@@ -72,7 +74,7 @@ class _GamesHubScreenState extends State<GamesHubScreen> {
             itemCount: games.length,
             itemBuilder: (context, i) {
               final g = games[i];
-              final played = context.app.progress.gamesPlayed[switch (i) { 0 => 'find', 1 => 'match', 2 => 'memory', 3 => 'trace', _ => 'count' }] ?? 0;
+              final played = context.app.progress.gamesPlayed[switch (i) { 0 => 'find', 1 => 'match', 2 => 'memory', 3 => 'trace', 4 => 'count', _ => 'feed' }] ?? 0;
               return PopIn(
                 index: i,
                 child: Pressable(

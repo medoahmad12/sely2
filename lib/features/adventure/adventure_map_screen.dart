@@ -5,6 +5,7 @@ import '../../app_scope.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive.dart';
 import '../../services/audio_service.dart';
+import '../../widgets/art_image.dart';
 import '../../widgets/chunky.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/kid_scaffold.dart';
@@ -283,7 +284,7 @@ class _LevelNode extends StatelessWidget {
           child: state == _NodeState.done
               ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   for (var i = 0; i < 3; i++)
-                    Icon(Icons.star_rounded, size: 20 * u, color: i < stars ? AppColors.yellow : Colors.white.withValues(alpha: 0.7)),
+                    StarArt(size: 21 * u, lit: i < stars),
                 ])
               : Text(
                   '${level.number}',

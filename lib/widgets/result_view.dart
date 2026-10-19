@@ -21,7 +21,7 @@ class ResultView extends StatelessWidget {
       child: SingleChildScrollView(
         padding: EdgeInsets.all(16 * u),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          SelyMascot(size: 170 * u, hat: context.app.progress.hat),
+          SelyMascot(size: 170 * u, hat: context.app.progress.hat, pose: 'sili_encourage'),
           SizedBox(height: 8 * u),
           Text(title,
               textAlign: TextAlign.center,

@@ -174,6 +174,12 @@ class AppStrings {
     'quest_not_this': 'هذه لا تبدأ بحرف {x}، حاول مرة ثانية',
     'quest_trace': 'والآن نرسم حرف {x} معاً',
     'quest_done': 'أحسنت! تعلمنا حرف {x}',
+    'game_feed': 'أطعم القطة',
+    'feed_ask': 'القطة تريد {x}',
+    'feed_ok': 'تمام',
+    'feed_yum': 'مممم لذيذ! شكراً',
+    'feed_too_few': 'ما زالت جائعة، أضف المزيد',
+    'feed_too_many': 'هذه كثيرة قليلاً، أعد واحدة إلى الصحن',
   };
 
   static const Map<String, String> _en = {
@@ -334,5 +340,11 @@ class AppStrings {
     'quest_not_this': "That one doesn't start with {x}. Try again!",
     'quest_trace': "Now let's trace {x} together",
     'quest_done': 'Great job! We learned {x}',
+    'game_feed': 'Feed the cat',
+    'feed_ask': 'The cat wants {x}',
+    'feed_ok': 'Done',
+    'feed_yum': 'Yum! Thank you!',
+    'feed_too_few': 'Still hungry! Add some more',
+    'feed_too_many': 'That is a bit too many. Put one back',
   };
 }

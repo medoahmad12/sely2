@@ -4,6 +4,7 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_tokens.dart';
 import '../core/utils/responsive.dart';
 import '../features/rewards/reward_catalog.dart';
+import 'art_image.dart';
 import 'chunky.dart';
 import 'pressable.dart';
 import 'scene_backdrop.dart';
@@ -37,7 +38,7 @@ class StarCounter extends StatelessWidget {
         depth: 4 * u,
         padding: EdgeInsets.symmetric(horizontal: 12 * u, vertical: 5 * u),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text('⭐', style: TextStyle(fontSize: 24 * u)),
+          StarArt(size: 28 * u),
           SizedBox(width: 6 * u),
           Text('${context.app.progress.stars}',
               style: TextStyle(

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 /// SELY - the original blue mascot, drawn entirely with CustomPainter (no image files).
 class SelyMascot extends StatefulWidget {
-  const SelyMascot({super.key, this.size = 140, this.hat = 'none', this.waving = true, this.sleepy = false});
+  const SelyMascot({super.key, this.size = 140, this.hat = 'none', this.waving = true, this.sleepy = false, this.pose});
   final double size;
+
+  /// Which picture to show: sili_wave (default), sili_happy, sili_think, sili_encourage.
+  final String? pose;
   final String hat;
   final bool waving;
   final bool sleepy;
@@ -23,6 +26,42 @@ class _SelyMascotState extends State<SelyMascot> with SingleTickerProviderStateM
     super.dispose();
   }
 
+
+  Widget _drawn(double t, double blink) => CustomPaint(
+        size: Size.square(widget.size),
+        painter: _SelyPainter(
+          blink: blink,
+          wave: widget.waving ? math.sin(t * 2 * math.pi * 4) : 0,
+          hat: widget.hat,
+          sleepy: widget.sleepy,
+        ),
+      );
+
+  /// The Sili picture with the chosen hat drawn on top. No picture -> the drawn mascot.
+  Widget _picture(double t, double blink) {
+    final s = widget.size;
+    final tilt = widget.waving ? math.sin(t * 2 * math.pi * 4) * 0.03 : 0.0;
+    return Image.asset(
+      'assets/images/art/${widget.pose ?? 'sili_wave'}.png',
+      width: s * 0.9,
+      height: s * 0.88,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.medium,
+      frameBuilder: (context, child, frame, sync) => SizedBox(
+        width: s,
+        height: s,
+        child: Stack(children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Transform.rotate(angle: tilt, alignment: Alignment.bottomCenter, child: child),
+          ),
+          if (widget.hat != 'none') Positioned.fill(child: IgnorePointer(child: CustomPaint(painter: _ArtHatPainter(widget.hat)))),
+        ]),
+      ),
+      errorBuilder: (context, error, stack) => _drawn(t, blink),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Semantics(
@@ -39,15 +78,7 @@ class _SelyMascotState extends State<SelyMascot> with SingleTickerProviderStateM
             final bob = math.sin(t * 2 * math.pi) * widget.size * 0.02;
             return Transform.translate(
               offset: Offset(0, bob),
-              child: CustomPaint(
-                size: Size.square(widget.size),
-                painter: _SelyPainter(
-                  blink: blink,
-                  wave: widget.waving ? math.sin(t * 2 * math.pi * 4) : 0,
-                  hat: widget.hat,
-                  sleepy: widget.sleepy,
-                ),
-              ),
+              child: widget.sleepy ? _drawn(t, blink) : _picture(t, blink),
             );
           },
         ),
@@ -179,11 +210,11 @@ class _SelyPainter extends CustomPainter {
       canvas.drawOval(Rect.fromLTWH(45, 65, 10, 5), fill);
     }
 
-    _drawHat(canvas, fill);
+    drawHat(canvas, fill, hat);
     canvas.restore();
   }
 
-  void _drawHat(Canvas canvas, Paint fill) {
+  static void drawHat(Canvas canvas, Paint fill, String hat) {
     switch (hat) {
       case 'party':
         fill.color = const Color(0xFFFF4F8B);
@@ -248,4 +279,28 @@ class _SelyPainter extends CustomPainter {
   @override
   bool shouldRepaint(_SelyPainter o) =>
       o.blink != blink || o.wave != wave || o.hat != hat || o.sleepy != sleepy;
+}
+
+/// Hats for the picture version of Sili (same hats as the drawn one, moved to his head).
+class _ArtHatPainter extends CustomPainter {
+  _ArtHatPainter(this.hat);
+  final String hat;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.save();
+    canvas.scale(size.width / 100, size.height / 100);
+    final dy = switch (hat) { 'bow' => -5.0, 'party' || 'crown' => -6.0, _ => 0.0 };
+    final k = switch (hat) { 'party' || 'crown' => 1.25, 'glasses' => 1.12, _ => 1.1 };
+    final pivotY = hat == 'glasses' ? 45.0 : (hat == 'bow' ? 70.0 : 22.0);
+    canvas.translate(0, dy);
+    canvas.translate(50, pivotY);
+    canvas.scale(k);
+    canvas.translate(-50, -pivotY);
+    _SelyPainter.drawHat(canvas, Paint()..style = PaintingStyle.fill, hat);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_ArtHatPainter o) => o.hat != hat;
 }

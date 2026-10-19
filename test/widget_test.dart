@@ -5,6 +5,7 @@ import 'package:sely_kids/app_scope.dart';
 import 'package:sely_kids/features/adventure/adventure_map_screen.dart';
 import 'package:sely_kids/features/adventure/adventure_models.dart';
 import 'package:sely_kids/features/adventure/forest_quest_screen.dart';
+import 'package:sely_kids/features/games/feed_cat_game.dart';
 import 'package:sely_kids/features/games/game_items.dart';
 import 'package:sely_kids/features/games/quiz_view.dart';
 import 'package:sely_kids/features/trace/trace_board.dart';
@@ -161,5 +162,33 @@ void main() {
 
     expect(env.state.progress.starsFor('adv:ar:alef'), 3);
     expect(env.state.progress.isDone('ar:alef'), isTrue);
+  });
+
+  testWidgets('Feed the cat: a wrong amount is never punished, the cat just asks again', (tester) async {
+    tester.view.physicalSize = const Size(900, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final env = await TestEnv.create();
+    await tester.pumpWidget(wrap(env, const FeedCatGameScreen()));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(env.audio.spoken, contains('feed_ask'));
+    expect(find.byKey(const ValueKey('berry_0')), findsOneWidget);
+
+    // an empty bowl is "too few": gentle hint, no stars lost, nothing finished
+    await tester.tap(find.byKey(const ValueKey('feed_done')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(env.audio.spoken, contains('feed_too_few'));
+    expect(env.state.progress.stars, 0);
+
+    // tapping a treat moves it to the bowl, tapping it there puts it back
+    await tester.tap(find.byKey(const ValueKey('berry_0')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('bowl_0')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('bowl_0')));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('berry_0')), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2)); // let the cat calm down
   });
 }

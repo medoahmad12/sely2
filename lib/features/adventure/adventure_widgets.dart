@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive.dart';
+import '../../widgets/art_image.dart';
 import '../../widgets/chunky.dart';
 import '../../widgets/kid_scaffold.dart';
 import '../../widgets/pressable.dart';
@@ -79,14 +80,9 @@ class StarRating extends StatelessWidget {
                   tween: Tween(begin: 0, end: 1),
                   duration: Duration(milliseconds: 500 + 350 * i),
                   curve: Curves.elasticOut,
-                  builder: (context, v, _) => Transform.scale(
-                    scale: v,
-                    child: Icon(Icons.star_rounded, size: size * u, color: AppColors.yellow, shadows: const [
-                      Shadow(color: Color(0x55000000), blurRadius: 6, offset: Offset(0, 3)),
-                    ]),
-                  ),
+                  builder: (context, v, _) => Transform.scale(scale: v, child: StarArt(size: size * u)),
                 )
-              : Icon(Icons.star_rounded, size: size * u, color: Colors.white.withValues(alpha: 0.6)),
+              : StarArt(size: size * u, lit: false),
         ),
     ]);
   }
