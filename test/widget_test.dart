@@ -6,6 +6,8 @@ import 'package:sely_kids/features/adventure/adventure_map_screen.dart';
 import 'package:sely_kids/features/adventure/adventure_models.dart';
 import 'package:sely_kids/features/adventure/forest_quest_screen.dart';
 import 'package:sely_kids/features/games/feed_cat_game.dart';
+import 'package:sely_kids/features/home/home_screen.dart';
+import 'package:sely_kids/widgets/count_objects.dart';
 import 'package:sely_kids/features/games/game_items.dart';
 import 'package:sely_kids/features/games/quiz_view.dart';
 import 'package:sely_kids/features/trace/trace_board.dart';
@@ -190,5 +192,39 @@ void main() {
     expect(find.byKey(const ValueKey('berry_0')), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 2)); // let the cat calm down
+  });
+
+  testWidgets('Home: the adventure card opens the map with the first level', (tester) async {
+    tester.view.physicalSize = const Size(900, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final env = await TestEnv.create();
+    await tester.pumpWidget(wrap(env, const HomeScreen()));
+    await tester.pump(const Duration(milliseconds: 700));
+    expect(find.byKey(const ValueKey('adventure_card')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('adventure_card')));
+    await tester.pump(const Duration(milliseconds: 900));
+    expect(find.byKey(const ValueKey('level_adv:ar:alef')), findsOneWidget);
+  });
+
+  testWidgets('CountObjects: a tap reports the object, badges follow the tapping order', (tester) async {
+    tester.view.physicalSize = const Size(900, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final env = await TestEnv.create();
+    int? tapped;
+    await tester.pumpWidget(wrap(
+      env,
+      Center(child: CountObjects(count: 3, art: 'apple', counted: const {2, 0}, onTap: (i) => tapped = i)),
+    ));
+    await tester.pump();
+    expect(find.text('1'), findsOneWidget); // object 2 was tapped first
+    expect(find.text('2'), findsOneWidget); // object 0 second
+    expect(find.text('3'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('count_obj_1')));
+    expect(tapped, 1);
   });
 }

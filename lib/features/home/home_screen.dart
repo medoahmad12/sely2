@@ -3,6 +3,7 @@ import '../../app_scope.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/responsive.dart';
+import '../../widgets/art_image.dart';
 import '../../widgets/chunky.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/hold_to_unlock.dart';
@@ -55,13 +56,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final u = context.u;
     final p = context.app.progress;
     final worlds = <_World>[
-      _World('📚', 'world_arabic', AppColors.primary, p.percent(['ar']), () => const ArabicWorldScreen()),
-      _World('🔢', 'world_numbers', AppColors.purple, p.percent(['num']), () => const NumbersWorldScreen()),
-      _World('➕', 'world_math', AppColors.green, p.percent(['add', 'sub']), () => const MathWorldScreen()),
-      _World('🇬🇧', 'world_english', AppColors.orange, p.percent(['en']), () => const EnglishWorldScreen()),
-      _World('🎨', 'world_colors', AppColors.pink, p.percent(['col', 'shp']), () => const ColorsShapesWorldScreen()),
-      _World('🧠', 'world_games', const Color(0xFF00B8A9), null, () => const GamesHubScreen()),
-      _World('🏆', 'world_rewards', const Color(0xFFFFB400), null, () => const RewardsScreen()),
+      _World('📚', 'world_arabic', AppColors.primary, p.percent(['ar']), () => const ArabicWorldScreen(), art: 'sign_alef'),
+      _World('🔢', 'world_numbers', AppColors.purple, p.percent(['num']), () => const NumbersWorldScreen(), art: 'strawberry_crate'),
+      _World('➕', 'world_math', AppColors.green, p.percent(['add', 'sub']), () => const MathWorldScreen(), art: 'bird_blue'),
+      _World('🇬🇧', 'world_english', AppColors.orange, p.percent(['en']), () => const EnglishWorldScreen(), art: 'dog'),
+      _World('🎨', 'world_colors', AppColors.pink, p.percent(['col', 'shp']), () => const ColorsShapesWorldScreen(), art: 'shape_house'),
+      _World('🧠', 'world_games', const Color(0xFF00B8A9), null, () => const GamesHubScreen(), art: 'cat_happy'),
+      _World('🏆', 'world_rewards', const Color(0xFFFFB400), null, () => const RewardsScreen(), art: 'gift_box'),
     ];
     return KidScaffold(
       title: context.tr('app_name'),
@@ -103,8 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _World {
-  const _World(this.emoji, this.labelKey, this.color, this.progress, this.builder);
+  const _World(this.emoji, this.labelKey, this.color, this.progress, this.builder, {this.art});
   final String emoji;
+
+  /// Picture in assets/images/art (the emoji is shown while there is none).
+  final String? art;
   final String labelKey;
   final Color color;
   final double? progress;
@@ -149,7 +153,14 @@ class _WorldTile extends StatelessWidget {
                         border: Border.all(color: Colors.white.withValues(alpha: 0.55), width: 3),
                       ),
                       alignment: Alignment.center,
-                      child: Text(world.emoji, style: TextStyle(fontSize: 52 * u)),
+                      child: world.art == null
+                          ? Text(world.emoji, style: TextStyle(fontSize: 52 * u))
+                          : ArtImage(
+                              world.art!,
+                              width: 82 * u,
+                              height: 82 * u,
+                              fallback: Text(world.emoji, style: TextStyle(fontSize: 52 * u)),
+                            ),
                     ),
                     if (progress != null)
                       SizedBox(

@@ -44,14 +44,16 @@ class AdventureMapScreen extends StatefulWidget {
   State<AdventureMapScreen> createState() => _AdventureMapScreenState();
 }
 
-class _AdventureMapScreenState extends State<AdventureMapScreen> {
+class _AdventureMapScreenState extends State<AdventureMapScreen> with SingleTickerProviderStateMixin {
   final ScrollController _scroll = ScrollController();
+  late final AnimationController _float = AnimationController(vsync: this, duration: const Duration(seconds: 5))..repeat();
   bool _centered = false;
   int _shakeIndex = -1;
   int _shakeTick = 0;
 
   @override
   void dispose() {
+    _float.dispose();
     _scroll.dispose();
     super.dispose();
   }
@@ -121,7 +123,42 @@ class _AdventureMapScreenState extends State<AdventureMapScreen> {
                   ),
                 ),
                 Positioned(left: 0, right: 0, top: 70 * u, child: _SoonSign(text: context.tr('adv_soon'))),
-                Positioned(left: 0, right: 0, bottom: 24 * u, child: Center(child: Text('🏡', style: TextStyle(fontSize: 64 * u)))),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: IgnorePointer(
+                    child: ArtImage(
+                      'panorama_banner',
+                      width: w,
+                      fallback: Padding(
+                        padding: EdgeInsets.only(bottom: 24 * u),
+                        child: Center(child: Text('🏡', style: TextStyle(fontSize: 64 * u))),
+                      ),
+                    ),
+                  ),
+                ),
+                // a bird or a butterfly floats beside the road every few levels
+                for (var i = 2; i < levels.length; i += 5)
+                  Positioned(
+                    left: centers[i].dx > w / 2 ? w * 0.04 : w - w * 0.04 - 52 * u,
+                    top: centers[i].dy - 30 * u,
+                    child: IgnorePointer(
+                      child: AnimatedBuilder(
+                        animation: _float,
+                        builder: (context, child) => Transform.translate(
+                          offset: Offset(0, math.sin(_float.value * 2 * math.pi + i) * 8 * u),
+                          child: child,
+                        ),
+                        child: ArtImage(
+                          (i ~/ 5).isEven ? 'bird_blue' : 'butterfly',
+                          height: 50 * u,
+                          width: 52 * u,
+                          fallback: const SizedBox.shrink(),
+                        ),
+                      ),
+                    ),
+                  ),
                 for (var i = 0; i < levels.length; i++)
                   Positioned(
                     left: centers[i].dx - nodeR,

@@ -9,6 +9,9 @@ import '../games/game_items.dart';
 import '../games/quiz_view.dart';
 import '../lesson/lesson_flow.dart';
 import '../trace/trace_board.dart';
+import '../../widgets/art_image.dart';
+import '../../widgets/chunky.dart';
+import '../../widgets/count_objects.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/kid_scaffold.dart';
 import '../../widgets/pressable.dart';
@@ -45,19 +48,21 @@ class NumbersWorldScreen extends StatelessWidget {
                         child: Pressable(
                           semanticLabel: '${n.value}',
                           onTap: () => Navigator.of(context).push(fadeRoute(NumberLessonScreen(index: i))),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(AppRadius.card),
-                              border: Border.all(color: color, width: 4),
-                              boxShadow: AppShadows.soft(color),
-                            ),
+                          child: ChunkyBox(
+                            color: color,
+                            radius: AppRadius.card,
+                            depth: 6 * u,
                             child: Stack(children: [
                               Center(
                                 child: Text('${n.value}',
-                                    style: TextStyle(fontSize: 60 * u, fontWeight: FontWeight.w900, color: color)),
+                                    style: TextStyle(
+                                      fontSize: 62 * u,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                      shadows: const [Shadow(color: Color(0x66000000), blurRadius: 4, offset: Offset(0, 3))],
+                                    )),
                               ),
-                              if (done) const Positioned(top: 4, right: 6, child: Text('⭐', style: TextStyle(fontSize: 22))),
+                              if (done) PositionedDirectional(top: 6 * u, end: 6 * u, child: StarArt(size: 26 * u)),
                             ]),
                           ),
                         ),
@@ -136,13 +141,12 @@ class _CountStep extends StatefulWidget {
 
 class _CountStepState extends State<_CountStep> {
   final Set<int> _counted = {};
-  late final String _emoji;
+  late final String _art;
 
   @override
   void initState() {
     super.initState();
-    final emojis = AppScope.read(context).repo.mathEmojis;
-    _emoji = emojis[widget.value % emojis.length];
+    _art = CountObjects.artFor(widget.value);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) unawaited(AppScope.read(context).audio.speak('ar_num_${widget.value}', widget.word, lang: 'ar'));
     });
@@ -167,46 +171,29 @@ class _CountStepState extends State<_CountStep> {
         SizedBox(height: 8 * u),
         Pressable(
           onTap: () => AppScope.read(context).audio.speak('ar_num_${widget.value}', widget.word, lang: 'ar'),
-          child: Container(
+          semanticLabel: widget.word,
+          child: ChunkyBox(
+            color: Colors.white,
+            radius: AppRadius.card * 1.4 * u,
+            depth: 8 * u,
             width: 200 * u,
             height: 200 * u,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.card * 1.4), boxShadow: AppShadows.soft(AppColors.purple)),
-            child: Text('${widget.value}', style: TextStyle(fontSize: 140 * u, fontWeight: FontWeight.w900, color: AppColors.purple)),
+            gloss: false,
+            child: Stack(children: [
+              Center(
+                child: Text('${widget.value}', style: TextStyle(fontSize: 140 * u, fontWeight: FontWeight.w900, color: AppColors.purple)),
+              ),
+              PositionedDirectional(
+                top: 8 * u,
+                end: 8 * u,
+                child: Icon(Icons.volume_up_rounded, size: 34 * u, color: AppColors.purple.withValues(alpha: 0.7)),
+              ),
+            ]),
           ),
         ),
         Text(widget.word, style: TextStyle(fontSize: 34 * u, fontWeight: FontWeight.w900, color: AppColors.navy)),
-        SizedBox(height: 8 * u),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 8 * u,
-          runSpacing: 8 * u,
-          children: [
-            for (var i = 0; i < widget.value; i++)
-              Pressable(
-                sound: false,
-                onTap: () => _tap(i),
-                child: AnimatedScale(
-                  scale: _counted.contains(i) ? 1.25 : 1,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOutBack,
-                  child: Opacity(
-                    opacity: _counted.contains(i) ? 1 : 0.8,
-                    child: Container(
-                      width: 62 * u,
-                      height: 62 * u,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: _counted.contains(i) ? const Color(0xFFFFF3C4) : Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(_emoji, style: TextStyle(fontSize: 38 * u)),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+        SizedBox(height: 10 * u),
+        CountObjects(count: widget.value, art: _art, counted: _counted, onTap: _tap),
       ]),
     );
   }

@@ -18,8 +18,10 @@ The app loads a picture with `ArtImage('<name>')`; if a file is missing the old 
 | `cat_happy` | 170x218 | Feed the cat game |
 | `bowl`, `strawberry`, `apple` | 251x134, 147x167, 168x179 | Feed the cat game |
 | `star` | 163x163 | star counter, ratings, map stars (`StarArt`) |
-| `panorama_banner` | 1524x271 | background of the home "adventure" card |
-| `dog`, `chick`, `bird_blue`, `butterfly`, `gift_box`, `stars_group`, `strawberry_crate`, `shape_house` | ~150-230 | extracted, not placed on a screen yet |
+| `panorama_banner` | 1524x271 | background of the home "adventure" card and the landscape at the start of the letters map |
+| `dog`, `bird_blue`, `gift_box`, `strawberry_crate`, `shape_house`, `sign_alef` | ~150-230 | picture of the matching world card on the home screen (English, math, rewards, numbers, colors+shapes, letters) |
+| `chick`, `butterfly`, `bird_blue` | ~160-180 | counting objects (number lesson, counting game); butterfly and bird also float beside the road on the letters map |
+| `stars_group` | 185x177 | extracted, not placed on a screen yet |
 | `sign_alef` | 191x178 | extracted. The letter is painted into the sign, so it only fits the letter alef |
 
 ## Known problems in the sheet

@@ -7,6 +7,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/utils/responsive.dart';
 import '../../models/content_models.dart';
 import '../../services/audio_service.dart';
+import '../../widgets/chunky.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/kid_scaffold.dart';
 import '../../widgets/pressable.dart';
@@ -236,18 +237,36 @@ class _ForestQuestScreenState extends State<ForestQuestScreen> with SingleTicker
                 child: Pressable(
                   onTap: _sayLetter,
                   semanticLabel: _letter.name,
-                  child: Container(
-                    width: 190 * u,
-                    height: 190 * u,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(44 * u),
-                      boxShadow: const [BoxShadow(color: Color(0x44000000), blurRadius: 16, offset: Offset(0, 8))],
-                    ),
-                    child: Text(
-                      _letter.glyph,
-                      style: TextStyle(fontSize: 140 * u, fontWeight: FontWeight.w900, color: AppColors.navy, height: 1.1),
+                  child: ChunkyBox(
+                    key: const ValueKey('quest_letter_board'),
+                    color: const Color(0xFFC98B4E),
+                    radius: 38 * u,
+                    depth: 9 * u,
+                    width: 214 * u,
+                    height: 214 * u,
+                    padding: EdgeInsets.all(14 * u),
+                    child: Container(
+                      decoration: BoxDecoration(color: const Color(0xFFFFF4DC), borderRadius: BorderRadius.circular(26 * u)),
+                      child: Stack(children: [
+                        Center(
+                          child: Text(
+                            _letter.glyph,
+                            style: TextStyle(fontSize: 130 * u, fontWeight: FontWeight.w900, color: AppColors.navy, height: 1.1),
+                          ),
+                        ),
+                        PositionedDirectional(
+                          top: 6 * u,
+                          end: 6 * u,
+                          child: ChunkyBox(
+                            circle: true,
+                            color: AppColors.primary,
+                            width: 54 * u,
+                            height: 54 * u,
+                            depth: 4 * u,
+                            child: Center(child: Icon(Icons.volume_up_rounded, size: 32 * u, color: Colors.white)),
+                          ),
+                        ),
+                      ]),
                     ),
                   ),
                 ),

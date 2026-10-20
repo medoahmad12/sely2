@@ -7,6 +7,7 @@ import '../../core/utils/responsive.dart';
 import '../../services/audio_service.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/kid_scaffold.dart';
+import '../../widgets/count_objects.dart';
 import '../../widgets/option_tile.dart';
 import '../../widgets/pressable.dart';
 import '../../widgets/result_view.dart';
@@ -29,7 +30,7 @@ class _CountGameScreenState extends State<CountGameScreen> {
   bool _hadWrong = false;
   int _shake = 0;
   late int _n;
-  late String _emoji;
+  late String _art;
   late List<int> _options;
   final Set<int> _wrong = {};
   final Set<int> _counted = {};
@@ -45,8 +46,7 @@ class _CountGameScreenState extends State<CountGameScreen> {
     final level = app.adaptive.levelFor('count');
     final maxN = switch (level) { 1 => 3, 2 => 5, _ => 10 };
     _n = 1 + app.random.nextInt(maxN);
-    final emojis = app.repo.mathEmojis;
-    _emoji = emojis[app.random.nextInt(emojis.length)];
+    _art = CountObjects.arts[app.random.nextInt(CountObjects.arts.length)];
     final set = <int>{_n};
     final upper = maxN < 4 ? 4 : maxN + 1;
     var guard = 0;
@@ -141,33 +141,7 @@ class _CountGameScreenState extends State<CountGameScreen> {
           child: Center(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(12 * u),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 10 * u,
-                runSpacing: 10 * u,
-                children: [
-                  for (var i = 0; i < _n; i++)
-                    Pressable(
-                      sound: false,
-                      onTap: () => _tapObject(i),
-                      child: AnimatedScale(
-                        scale: _counted.contains(i) ? 1.2 : 1,
-                        duration: const Duration(milliseconds: 180),
-                        child: Container(
-                          width: 76 * u,
-                          height: 76 * u,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: _counted.contains(i) ? const Color(0xFFFFF3C4) : Colors.white,
-                            borderRadius: BorderRadius.circular(AppRadius.card),
-                            boxShadow: AppShadows.card,
-                          ),
-                          child: Text(_emoji, style: TextStyle(fontSize: 46 * u)),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+              child: CountObjects(count: _n, art: _art, counted: _counted, onTap: _tapObject),
             ),
           ),
         ),
