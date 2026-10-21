@@ -34,7 +34,7 @@ class AdventureCard extends StatelessWidget {
         depth: 8 * u,
         clip: true,
         gloss: false,
-        height: 168 * u,
+        height: 176 * u,
         child: Stack(children: [
           Positioned.fill(
             child: Image.asset(
@@ -64,17 +64,21 @@ class AdventureCard extends StatelessWidget {
           ),
           Positioned.fill(
             child: Padding(
-              padding: EdgeInsetsDirectional.only(start: 150 * u, end: 14 * u, top: 12 * u, bottom: 12 * u),
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  title,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 27 * u,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    height: 1.15,
-                    shadows: const [Shadow(color: Color(0x66000000), blurRadius: 4, offset: Offset(0, 2))],
+              padding: EdgeInsetsDirectional.only(start: 150 * u, end: 14 * u, top: 10 * u, bottom: 10 * u),
+              child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 27 * u,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      height: 1.15,
+                      shadows: const [Shadow(color: Color(0x66000000), blurRadius: 4, offset: Offset(0, 2))],
+                    ),
                   ),
                 ),
                 SizedBox(height: 4 * u),
@@ -89,7 +93,7 @@ class AdventureCard extends StatelessWidget {
                     shadows: const [Shadow(color: Color(0x55000000), blurRadius: 3, offset: Offset(0, 1))],
                   ),
                 ),
-                SizedBox(height: 10 * u),
+                SizedBox(height: 8 * u),
                 Row(children: [
                   Expanded(
                     child: ClipRRect(
