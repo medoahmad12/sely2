@@ -205,6 +205,9 @@ void main() {
     expect(find.byKey(const ValueKey('adventure_card')), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('adventure_card')));
+    // Flutter keeps a freshly pushed page offstage for its first frame (hero check),
+    // so it needs one frame to appear and a second one to be on stage.
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
     expect(find.byKey(const ValueKey('level_adv:ar:alef')), findsOneWidget);
   });
